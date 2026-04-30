@@ -17,9 +17,35 @@ int main(int argc, char *argv[])
     int numProcesses, myRank;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-    printf("Hello world from %d!\n", myRank);
+
     if (myRank == 0) {
-        printf("Total number of processes = %d\n", numProcesses);
+        int buf[2];
+        for (int i = 1; i < numProcesses; i++) {
+            MPI_Recv(
+                buf,
+                2,
+                MPI_INT,
+                MPI_ANY_SOURCE,
+                MPI_ANY_TAG,
+                MPI_COMM_WORLD,
+                MPI_STATUS_IGNORE
+            );
+            printf("Process %d sent %d\n", buf[0], buf[1]);
+        }
+    }
+    else {
+        srand(time(NULL));
+
+        int rnum = (rand() % 11);
+        int buf[2] = {myRank, rnum};
+        MPI_Send(
+            buf,
+            2,
+            MPI_INT,
+            0,
+            0,
+            MPI_COMM_WORLD
+        );
     }
 
     MPI_Finalize();
