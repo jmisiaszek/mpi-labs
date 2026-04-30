@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        srand(time(NULL));
+        srand(time(NULL) + myRank);
 
         int rnum = (rand() % 11);
         int buf[2] = {myRank, rnum};
